@@ -179,4 +179,4 @@ The notebook supports:
 #### DEG Encoder
 
 - **AE Mode**: `GO_Autoencoder` - Autoencoder-based encoder
-  - Architecture: `[12014, 1574, 1386, 951, 515] → latent_dim`
+  - Architecture: `[10280, 2011, 1614, 1075] → latent_dim`

@@ -389,7 +389,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     
     parser.add_argument('--data_root', type=str, default='data')
-    parser.add_argument('--task_path', type=str, default='../ScafVAE/ScafVAE/demo/CMAP_original/deg2mol_64dim')
+    parser.add_argument('--task_path', type=str, default='ScafVAE/deg2mol_64dim')
     parser.add_argument('--gene_list_path', type=str, default="data/BP/gene_attribute_matrix_overlap_with_L1000.csv")
     parser.add_argument('--deg_vae_path', type=str, default="checkpoints/DEGMON_AE_best_model.pth")
     

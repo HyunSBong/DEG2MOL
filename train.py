@@ -28,8 +28,7 @@ try:
     
     from models.flow.MLP import GatedConditionalFlowMLP
 except ImportError as e:
-    print(f"💥 모듈 임포트 실패: {e}")
-    sys.exit(1)
+    print(f"Import Error: {e}"); sys.exit(1)
 
 def setup_wandb(args):
     if not args.use_wandb:
@@ -94,7 +93,7 @@ def load_pretrained_models(args, device):
     if not os.path.exists(args.deg_vae_path):
         raise FileNotFoundError(f"DEGMON Error {args.deg_vae_path}")
 
-    deg_model = GO_Autoencoder(dims=[12014, 1574, 1386, 951, 515], latent_dim=args.latent_dim).to(device)
+    deg_model = GO_Autoencoder(dims=[10280, 2011, 1614, 1075], latent_dim=args.latent_dim).to(device) # 7-5
     
     checkpoint = torch.load(args.deg_vae_path, map_location=device)
     if isinstance(checkpoint, dict) and 'model_state_dict' in checkpoint:
@@ -391,8 +390,8 @@ if __name__ == "__main__":
     
     parser.add_argument('--data_root', type=str, default='data')
     parser.add_argument('--task_path', type=str, default='../ScafVAE/ScafVAE/demo/CMAP_original/deg2mol_64dim')
-    parser.add_argument('--gene_list_path', type=str, default="data/first_GO_matrix_cmap_12014x1574_deg랑유전자맞춤.csv")
-    parser.add_argument('--deg_vae_path', type=str, default="checkpoints/DEGMON_AE_Best_model.pth")
+    parser.add_argument('--gene_list_path', type=str, default="data/BP/gene_attribute_matrix_overlap_with_L1000.csv")
+    parser.add_argument('--deg_vae_path', type=str, default="checkpoints/DEGMON_AE_best_model.pth")
     
     parser.add_argument('--latent_dim', type=int, default=64)
     parser.add_argument('--model_dim', type=int, default=512)

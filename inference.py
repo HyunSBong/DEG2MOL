@@ -16,7 +16,6 @@ from typing import List, Dict, Optional
 try:
     from ScafVAE.app.app_utils import ScafVAEBase, load_ModelBase
     from ScafVAE.utils.dataset_utils import ScafDataset, collate_ligand
-    from models.DEGMON.DEGMON import DEGMON_12014_VAE
     from models.DEGMON.DEG_AE import GO_Autoencoder
     from models.flow.MLP import GatedConditionalFlowMLP
     from utils.evaluation import *
@@ -286,7 +285,7 @@ def main(args):
     flow_model.load_state_dict(checkpoint['model_state_dict'])
     print(f"   ✅ Flow Model loaded")
 
-    deg_model = GO_Autoencoder(dims=[12014, 1574, 1386, 951, 515], latent_dim=args.latent_dim).to(device)
+    deg_model = GO_Autoencoder(dims=[10280, 2011, 1614, 1075], latent_dim=args.latent_dim).to(device) # 7-5
     deg_model.load_state_dict(torch.load(args.deg_vae_path, map_location=device)['model_state_dict'])
     
     scaf_vae = ScafVAEBase().to(device)
@@ -320,24 +319,24 @@ def main(args):
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Flow-based Model Evaluation (Memory Optimized)")
-    parser.add_argument("--model_checkpoint", type=str, required=True)
-    parser.add_argument("--deg_vae_path", type=str, default="checkpoints/DEGMON_AE_Best_model.pth")
+    parser.add_argument("--model_checkpoint", type=str, default = 'checkpoints/DEG2MOL_best_model.pt')
+    parser.add_argument("--deg_vae_path", type=str, default="checkpoints/DEGMON_AE_best_model.pth")
     parser.add_argument("--conditional", action='store_true')
     parser.add_argument('--model_dim', type=int, default=512)
     parser.add_argument('--latent_dim', type=int, default=64)
     parser.add_argument('--num_layers', type=int, default=6)
     parser.add_argument('--num_heads', type=int, default=8)
     parser.add_argument('--combine_method', type=str, default='sum', choices=['concat', 'sum', 'cross_attn'])
-    parser.add_argument('--dropout', type=float, default=0.1)
+    parser.add_argument('--dropout', type=float, default=0)
     parser.add_argument('--data_root', type=str, default='data')
     parser.add_argument('--task_path', type=str, default='../ScafVAE/ScafVAE/demo/CMAP_origianl/deg2mol_64dim')
-    parser.add_argument('--gene_list_path', type=str, default="data/first_GO_matrix_cmap_12014x1574_deg랑유전자맞춤.csv")
-    parser.add_argument("--num_samples", type=int, default=100, help="각 test 샘플당 생성할 분자 개수")
-    parser.add_argument("--batch_size", type=int, default=256, help="DataLoader 배치 크기")
-    parser.add_argument("--generation_batch_size", type=int, default=64, help="생성 시 청크 크기 (메모리 절약)")
+    parser.add_argument('--gene_list_path', type=str, default="data/BP/gene_attribute_matrix_overlap_with_L1000.csv")
+    parser.add_argument("--num_samples", type=int, default=100, help="Number of molecules to generate per test sample")
+    parser.add_argument("--batch_size", type=int, default=256, help="Batch size for DataLoader")
+    parser.add_argument("--generation_batch_size", type=int, default=64, help="Chunk size for generation (to save memory)")
     parser.add_argument("--num_steps", type=int, default=100)
     parser.add_argument("--solver", type=str, default='euler', choices=['euler', 'heun', 'rk4', 'dopri5'])
-    parser.add_argument("--guidance_scale", type=float, default=1.5)
+    parser.add_argument("--guidance_scale", type=float, default=3.0)
     parser.add_argument("--normalize_condition", action='store_true')
     parser.add_argument("--max_eval_samples", type=int, default=None)
     parser.add_argument("--eval_chunk_size", type=int, default=10000)
